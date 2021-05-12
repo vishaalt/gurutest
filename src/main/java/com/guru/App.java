@@ -1,4 +1,4 @@
-package com.amazon.test;
+package com.guru;
 
 import javax.crypto.Cipher;
 import java.security.NoSuchAlgorithmException;

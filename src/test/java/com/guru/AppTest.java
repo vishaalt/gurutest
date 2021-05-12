@@ -1,4 +1,4 @@
-package com.amazon.test;
+package com.guru;
 
 import static org.junit.Assert.assertTrue;
 
