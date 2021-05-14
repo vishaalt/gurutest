@@ -1,7 +1,7 @@
 name: My First GitHub Action
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  My-Action:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 This job was automatically triggered by a ${{ github.event_name }} event."
