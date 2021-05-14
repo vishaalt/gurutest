@@ -14,4 +14,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: Build the package using Maven
+        run: |
+          cd ${{ github.workspace }}
+          mvn package
+          ls target
       - run: echo "🍏 This job's status is ${{ job.status }}."
