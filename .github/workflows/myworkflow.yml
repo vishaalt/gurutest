@@ -4,19 +4,44 @@ jobs:
   My-Action:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 This job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub."
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
+      - run: echo "Triggered by a ${{ github.event_name }} event."
+      - run: echo "Running on a ${{ runner.os }} server hosted by GitHub."
+      - run: echo "Repository is ${{ github.repository }}, branch is ${{ github.ref }}."
+
+      - name: Checkout repository
         uses: actions/checkout@v2
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        if: ${{ always() }}
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
       - name: Build the package using Maven
         run: |
           cd ${{ github.workspace }}
           mvn package
-          ls target
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+
+      - run: echo "Job status after building is ${{ job.status }}."
+
+      - name: Analyze with CodeGuru Reviewer
+        uses: aws-actions/codeguru-reviewer@v1
+        if: ${{ always() }} 
+        with:
+          source_path: .     # Repository root
+          build_root: target # build artifact(s) directory
+          s3_bucket: codeguru-reviewer-github-nrosner-gurutest  # S3 Bucket with "codeguru-reviewer-*" prefix
+
+      - run: echo "Job status after analyzing is ${{ job.status }}."
+
+      - name: Upload analysis results
+        uses: github/codeql-action/upload-sarif@v1
+        if: ${{ always() }}
+        with:
+          sarif_file: codeguru-results.sarif.json
+
+      - run: echo "Job status after uploading results is ${{ job.status }}."
