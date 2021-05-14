@@ -8,6 +8,11 @@ jobs:
       - run: echo "Running on a ${{ runner.os }} server hosted by GitHub."
       - run: echo "Repository is ${{ github.repository }}, branch is ${{ github.ref }}."
 
+      - name: Checkout the repository with the code to be analyzed
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Checkout the action from a private repository
         uses: actions/checkout@v2
         if: ${{ always() }}
@@ -17,10 +22,9 @@ jobs:
           token: ${{ secrets.TOKEN }}   # Required for Private Beta
           path: ./.github/vijejain/cicd-actions
 
-      - name: Checkout the repository with the code to be analyzed
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Show what's inside the cicd-actions directory (debugging)
+        run: |
+          ls -l ./.github/vijejain/cicd-actions
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -30,7 +34,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
-      - name: Build the repository to be analzed (using Maven)
+      - name: Build the repository to be analyzed (using Maven)
         run: |
           cd ${{ github.workspace }}
           mvn package
