@@ -26,9 +26,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+
 
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
@@ -37,23 +35,28 @@ jobs:
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-
-    - name: Configure AWS Credentials
+      
+    - name: Checkout
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+#Credential example showing GitHub hosted runners using GitHub secrets
+    - name: Configure AWS Credentials 
       uses: aws-actions/configure-aws-credentials@v1
       if: ${{ always() }}
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
-
-    - name: Checkout the CodeGuru Reviewer Action repository
-      uses: actions/checkout@v2
+        
+#Credential example showing self hosted runners with role based authorization
+    - name: Configure AWS Credentials
       if: ${{ always() }}
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        repository: vijejain/cicd-actions
-        ref: refs/heads/main
-        token: ${{ secrets.TOKEN }}   # Required for Private Beta
-        path: ./.github/vijejain/cicd-actions
+        aws-region: us-west-2
+        role-to-assume: my-github-actions-role
 
     - name: AWS CodeGuru Reviewer Scanner
       uses: ./.github/vijejain/cicd-actions
