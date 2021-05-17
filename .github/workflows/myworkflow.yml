@@ -47,7 +47,7 @@ jobs:
         with:
           source_path: .     # Repository root
           build_path: target # build artifact(s) directory
-          s3_bucket: codeguru-reviewer-mybucket-234  # S3 Bucket with "codeguru-reviewer-*" prefix
+          s3_bucket: codeguru-reviewer-mybucket101  # S3 Bucket with "codeguru-reviewer-*" prefix
 
       - run: echo "Job status after analyzing is ${{ job.status }}."
 
