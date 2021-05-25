@@ -11,7 +11,7 @@ public class App
 	}
 
 	public static void bad() throws NoSuchAlgorithmException, NoSuchPaddingException {
-		Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+		Cipher cipher = Cipher.getInstance("AES/CB/NoPadding");
 	}
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException {
